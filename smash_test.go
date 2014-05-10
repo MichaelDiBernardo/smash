@@ -1,0 +1,6 @@
+package smash
+
+import (
+	"testing"
+)
+
