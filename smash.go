@@ -64,19 +64,23 @@ func NewFighter(hp int, melee int, evasion int, dice Roller) *Fighter {
 	return &Fighter{HP: hp, melee: melee, evasion: evasion, dice: dice}
 }
 
+func NewFighterAtRandom() *Fighter {
+	hitDice := NewDice(6, 4)
+	skillDice := NewDice(10, 2)
+	return NewFighter(hitDice.Roll(), skillDice.Roll(), skillDice.Roll(), NewDiceAtRandom())
+}
+
 func (self *Fighter) Hurt(dmg int) {
 	self.HP -= dmg
 }
 
 func (self *Fighter) Attack(other *Fighter) {
-    atk := D20.Roll() + self.melee
-    ev := D20.Roll() + other.evasion
+	atk := D20.Roll() + self.melee
+	ev := D20.Roll() + other.evasion
 
 	if ev > atk {
 		return
 	}
 
-    other.Hurt(self.dice.Roll())
+	other.Hurt(self.dice.Roll())
 }
-
-
