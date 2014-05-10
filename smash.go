@@ -84,3 +84,7 @@ func (self *Fighter) Attack(other *Fighter) {
 
 	other.Hurt(self.dice.Roll())
 }
+
+func (self *Fighter) Dead() bool {
+    return self.HP <= 0
+}

@@ -43,3 +43,17 @@ func TestMiss(t *testing.T) {
 		t.Errorf("Expected 10, got %d", f2.HP)
     }
 }
+
+func TestIsDead(t *testing.T) {
+    sut := NewFighter(1, 0, 0, NewFixedDice([]int{}))
+
+    if sut.Dead() {
+        t.Errorf("Dead but should be alive!")
+    }
+
+    sut.Hurt(1)
+
+    if !sut.Dead() {
+        t.Errorf("Alive but should be dead!")
+    }
+}
