@@ -72,9 +72,11 @@ func (self *Fighter) Attack(other *Fighter) {
     atk := D20.Roll() + self.melee
     ev := D20.Roll() + other.evasion
 
-	if ev >= atk {
+	if ev > atk {
 		return
 	}
 
     other.Hurt(self.dice.Roll())
 }
+
+

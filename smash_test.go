@@ -19,11 +19,27 @@ func TestHit(t *testing.T) {
 	// Attacker rolls 5 dmg.
 	f1 := NewFighter(10, 4, 0, NewFixedDice([]int{5}))
 
-    // Defender shouldn't have to roll anything.
+    // Defender shouldn't have to roll damage.
     f2 := NewFighter(10, 0, 3, NewFixedDice([]int{}))
 
     f1.Attack(f2)
     if f2.HP != 5 {
 		t.Errorf("Expected 5, got %d", f2.HP)
+    }
+}
+
+func TestMiss(t *testing.T) {
+	// Attacker rolls 0, defender rolls 1.
+	D20 = NewFixedDice([]int{0, 1})
+
+    // Attacker shouldn't have to roll damage.
+	f1 := NewFighter(10, 3, 0, NewFixedDice([]int{}))
+
+    // Defender shouldn't have to roll damage.
+    f2 := NewFighter(10, 0, 3, NewFixedDice([]int{}))
+
+    f1.Attack(f2)
+    if f2.HP != 10 {
+		t.Errorf("Expected 10, got %d", f2.HP)
     }
 }
