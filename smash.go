@@ -50,14 +50,31 @@ func (self *FixedDice) Roll() int {
 	return val
 }
 
+var D20 Roller = NewDice(1, 20)
+
 // A dude who fights.
 type Fighter struct {
-	hp      int
+	HP      int
 	melee   int
 	evasion int
-	dice    *Dice
+	dice    Roller
 }
 
-func NewFighter(hp int, melee int, evasion int, dice *Dice) *Fighter {
-	return &Fighter{hp: hp, melee: melee, evasion: evasion, dice: dice}
+func NewFighter(hp int, melee int, evasion int, dice Roller) *Fighter {
+	return &Fighter{HP: hp, melee: melee, evasion: evasion, dice: dice}
+}
+
+func (self *Fighter) Hurt(dmg int) {
+	self.HP -= dmg
+}
+
+func (self *Fighter) Attack(other *Fighter) {
+    atk := D20.Roll() + self.melee
+    ev := D20.Roll() + other.evasion
+
+	if ev >= atk {
+		return
+	}
+
+    other.Hurt(self.dice.Roll())
 }
