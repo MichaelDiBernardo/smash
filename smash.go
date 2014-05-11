@@ -1,8 +1,8 @@
 package smash
 
 import (
+	"fmt"
 	"math/rand"
-    "fmt"
 )
 
 //------------------------------------------------------------------------------
@@ -75,10 +75,17 @@ type Fighter struct {
 	melee   int
 	evasion int
 	dice    Roller
+	OnDeath func()
 }
 
 func NewFighter(hp int, melee int, evasion int, dice Roller) *Fighter {
-	return &Fighter{HP: hp, melee: melee, evasion: evasion, dice: dice}
+	return &Fighter{
+		HP:      hp,
+		melee:   melee,
+		evasion: evasion,
+		dice:    dice,
+		OnDeath: func() {},
+	}
 }
 
 func NewFighterAtRandom() *Fighter {
@@ -93,15 +100,23 @@ func NewFighterAtRandom() *Fighter {
 }
 
 func (self *Fighter) Hurt(dmg int) {
+	if self.Dead() {
+		panic("Hitting a dead man!")
+	}
+
 	self.HP -= dmg
-    fmt.Printf("%d dmg. CurHP: %d\n", dmg, self.HP)
+	fmt.Printf("%d dmg. CurHP: %d\n", dmg, self.HP)
+
+	if self.Dead() {
+		self.OnDeath()
+	}
 }
 
 func (self *Fighter) Attack(other *Fighter) {
 	atk := d20.Roll() + self.melee
 	ev := d20.Roll() + other.evasion
 
-    fmt.Printf("Rolled %d against %d.\n", atk, ev)
+	fmt.Printf("Rolled %d against %d.\n", atk, ev)
 
 	if ev > atk {
 		return
@@ -128,11 +143,11 @@ func NewTeamWithSelector(roster []*Fighter, selector func([]*Fighter) *Fighter) 
 
 func defaultSelector(roster []*Fighter) *Fighter {
 	n := rand.Intn(len(roster))
-    f := roster[n]
-    if f.Dead() {
-        return defaultSelector(roster)
-    }
-    return f
+	f := roster[n]
+	if f.Dead() {
+		return defaultSelector(roster)
+	}
+	return f
 }
 
 func NewTeam(roster []*Fighter) *Team {
@@ -182,7 +197,7 @@ func (self *Battle) FightItOut() (int, *Team) {
 		atkInd = (atkInd + 1) % 2
 		defInd := (atkInd + 1) % 2
 
-        fmt.Printf("Atk: %d Def: %d\n", atkInd, defInd)
+		fmt.Printf("Atk: %d Def: %d\n", atkInd, defInd)
 
 		attacker := self.teams[atkInd]
 		defender := self.teams[defInd]
