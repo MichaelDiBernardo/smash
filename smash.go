@@ -93,9 +93,30 @@ func (self *Fighter) Attack(other *Fighter) {
 }
 
 func (self *Fighter) Dead() bool {
-    return self.HP <= 0
+	return self.HP <= 0
 }
 
 //------------------------------------------------------------------------------
 // Battles.
 //------------------------------------------------------------------------------
+type Team struct {
+	roster   []*Fighter
+	selector func([]*Fighter) *Fighter
+}
+
+func NewTeamWithSelector(roster []*Fighter, selector func([]*Fighter) *Fighter) *Team {
+	return &Team{roster: roster, selector: selector}
+}
+
+func defaultSelector(roster []*Fighter) *Fighter {
+    n := rand.Intn(len(roster))
+    return roster[n]
+}
+
+func NewTeam(roster []*Fighter) *Team {
+    return NewTeamWithSelector(roster, defaultSelector)
+}
+
+func (self *Team) Select() *Fighter {
+    return self.selector(self.roster)
+}
