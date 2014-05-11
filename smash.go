@@ -4,6 +4,10 @@ import (
 	"math/rand"
 )
 
+//------------------------------------------------------------------------------
+// Random numbers.
+//------------------------------------------------------------------------------
+
 // Anything that can produce a random value is a roller. Bad name, I know.
 type Roller interface {
 	Roll() int
@@ -50,6 +54,9 @@ func (self *FixedDice) Roll() int {
 	return val
 }
 
+//------------------------------------------------------------------------------
+// Fighters and their stuff.
+//------------------------------------------------------------------------------
 var D20 Roller = NewDice(1, 20)
 
 // A dude who fights.
@@ -88,3 +95,7 @@ func (self *Fighter) Attack(other *Fighter) {
 func (self *Fighter) Dead() bool {
     return self.HP <= 0
 }
+
+//------------------------------------------------------------------------------
+// Battles.
+//------------------------------------------------------------------------------
