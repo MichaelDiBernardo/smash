@@ -2,6 +2,7 @@ package smash
 
 import (
 	"math/rand"
+    "fmt"
 )
 
 //------------------------------------------------------------------------------
@@ -33,7 +34,7 @@ func NewDiceAtRandom() *Dice {
 func (self *Dice) Roll() int {
 	total := 0
 	for i := 1; i <= self.die; i++ {
-		total += i * (rand.Intn(self.sides) + 1)
+		total += rand.Intn(self.sides) + 1
 	}
 	return total
 }
@@ -93,11 +94,14 @@ func NewFighterAtRandom() *Fighter {
 
 func (self *Fighter) Hurt(dmg int) {
 	self.HP -= dmg
+    fmt.Printf("%d dmg. CurHP: %d\n", dmg, self.HP)
 }
 
 func (self *Fighter) Attack(other *Fighter) {
 	atk := d20.Roll() + self.melee
 	ev := d20.Roll() + other.evasion
+
+    fmt.Printf("Rolled %d against %d.\n", atk, ev)
 
 	if ev > atk {
 		return
@@ -173,6 +177,8 @@ func (self *Battle) FightItOut() int {
 	for {
 		atkInd = (atkInd + 1) % 2
 		defInd := (atkInd + 1) % 2
+
+        fmt.Printf("Atk: %d Def: %d\n", atkInd, defInd)
 
 		attacker := self.teams[atkInd]
 		defender := self.teams[defInd]
