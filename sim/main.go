@@ -11,6 +11,7 @@ The simulation is over when all the fighters from one allegiance have fallen in
 battle.
 
 TODO:
+ - Specify team # and sizes on cmdline.
  - Delete all Printfs and report events to a central reporting channel.
  - Report on more events.
  - Give dudes names.
@@ -79,7 +80,7 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 
 	// How many dudes do we have participating?
-	nTeams := 10
+	nTeams := 100
 	nFightersPerSide := nTeams * 3
 
 	// Matchmaking setup.
@@ -101,7 +102,7 @@ func main() {
 	go countDeaths(orcDeaths, doneSignal, nFightersPerSide, smash.Elves)
 
 	// Start the fights.
-	for i := 0; i < 10; i++ {
+	for i := 0; i < nTeams; i++ {
 		battle := smash.NewBattle(randomTeam(elfDeaths), randomTeam(orcDeaths))
 		// Best possible use of the 'go' keyword.
 		go doBattle(battle, winnerQueues)
