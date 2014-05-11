@@ -1,29 +1,35 @@
 package main
 
 import (
-    "fmt"
     "math/rand"
     "time"
 
 	"smash"
 )
 
+func randomTeam() *smash.Team {
+	return smash.NewTeam([]*smash.Fighter{
+		smash.NewFighterAtRandom(),
+		smash.NewFighterAtRandom(),
+		smash.NewFighterAtRandom(),
+	})
+}
+
+func doBattle(battle *smash.Battle, winnerQueues []chan *smash.Team) {
+    allegiance, winners := battle.FightItOut()
+    winnerQueues[allegiance] <- winners
+}
+
 func main() {
     rand.Seed(time.Now().UnixNano())
 
-	elves := smash.NewTeam([]*smash.Fighter{
-		smash.NewFighterAtRandom(),
-		smash.NewFighterAtRandom(),
-		smash.NewFighterAtRandom(),
-	})
+    winnerQueues := []chan *smash.Team{
+        make(chan *smash.Team),
+        make(chan *smash.Team),
+    }
 
-	orcs := smash.NewTeam([]*smash.Fighter{
-		smash.NewFighterAtRandom(),
-		smash.NewFighterAtRandom(),
-		smash.NewFighterAtRandom(),
-	})
-
-    battle := smash.NewBattle(elves, orcs)
-    winner := battle.FightItOut()
-    fmt.Printf("Winner is: %d\n", winner)
+    for i := 0; i < 10; i++ {
+        battle := smash.NewBattle(randomTeam(), randomTeam())
+        doBattle(battle, winnerQueues)
+    }
 }

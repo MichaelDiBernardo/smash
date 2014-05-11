@@ -128,7 +128,11 @@ func NewTeamWithSelector(roster []*Fighter, selector func([]*Fighter) *Fighter) 
 
 func defaultSelector(roster []*Fighter) *Fighter {
 	n := rand.Intn(len(roster))
-	return roster[n]
+    f := roster[n]
+    if f.Dead() {
+        return defaultSelector(roster)
+    }
+    return f
 }
 
 func NewTeam(roster []*Fighter) *Team {
@@ -170,7 +174,7 @@ func NewBattle(elves *Team, orcs *Team) *Battle {
 	return &Battle{teams: teams}
 }
 
-func (self *Battle) FightItOut() int {
+func (self *Battle) FightItOut() (int, *Team) {
 	// Select random allegiance to start.
 	atkInd := rand.Intn(2)
 
@@ -187,7 +191,7 @@ func (self *Battle) FightItOut() int {
 		defender.DefendAgainst(champion)
 
 		if defender.Dead() {
-			return atkInd
+			return atkInd, self.teams[atkInd]
 		}
 	}
 }

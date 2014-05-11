@@ -124,7 +124,7 @@ func TestBasicBattle(t *testing.T) {
 	}
 
 	sut := NewBattle(NewTeam(elves), NewTeam(orcs))
-	winner := sut.FightItOut()
+	winner, _ := sut.FightItOut()
 
 	if winner != Elves {
 		t.Errorf("Elves should have won: Got %d", winner)
