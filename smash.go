@@ -102,7 +102,7 @@ func (self *Fighter) Dead() bool {
 }
 
 //------------------------------------------------------------------------------
-// Battles.
+// Teams.
 //------------------------------------------------------------------------------
 type Team struct {
 	roster   []*Fighter
@@ -138,4 +138,41 @@ func (self *Team) DefendAgainst(other *Fighter) {
 
 func (self *Team) pick() *Fighter {
 	return self.selector(self.roster)
+}
+
+//------------------------------------------------------------------------------
+// Battles.
+//------------------------------------------------------------------------------
+const (
+	Elves = iota
+	Orcs
+)
+
+type Battle struct {
+    teams []*Team
+}
+
+func NewBattle(elves *Team, orcs *Team) *Battle {
+    teams := []*Team{elves, orcs}
+    return &Battle{teams:teams}
+}
+
+func (self *Battle) FightItOut() int {
+    // Select random allegiance to start.
+    atkInd := rand.Intn(2)
+
+    for {
+        atkInd = (atkInd + 1) % 2
+        defInd := (atkInd + 1) % 2
+
+        attacker := self.teams[atkInd]
+        defender := self.teams[defInd]
+
+        champion := attacker.pick()
+        defender.DefendAgainst(champion)
+
+        if defender.Dead() {
+            return atkInd
+        }
+    }
 }

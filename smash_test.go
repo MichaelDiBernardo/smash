@@ -107,3 +107,22 @@ func TestFightMember(t *testing.T) {
 		t.Errorf("Expected first dude to have -5HP: had %d.", team[0].HP)
 	}
 }
+
+func TestBasicBattle(t *testing.T) {
+	elves := []*Fighter{
+		NewFighter(5000, 5000, 5000, NewDice(4, 8)),
+		NewFighter(5000, 5000, 5000, NewDice(4, 8)),
+	}
+
+	orcs := []*Fighter{
+		NewFighter(1, 0, 0, NewDice(1, 1)),
+		NewFighter(1, 0, 0, NewDice(1, 1)),
+	}
+
+	sut := NewBattle(NewTeam(elves), NewTeam(orcs))
+	winner := sut.FightItOut()
+
+	if winner != Elves {
+		t.Errorf("Elves should have won: Got %d", winner)
+	}
+}
