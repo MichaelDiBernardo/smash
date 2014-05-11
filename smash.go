@@ -57,7 +57,16 @@ func (self *FixedDice) Roll() int {
 //------------------------------------------------------------------------------
 // Fighters and their stuff.
 //------------------------------------------------------------------------------
-var D20 Roller = NewDice(1, 20)
+var defaultD20 Roller = NewDice(1, 20)
+var d20 Roller = defaultD20
+
+func setD20(r Roller) {
+    d20 = r
+}
+
+func resetD20() {
+    d20 = defaultD20
+}
 
 // A dude who fights.
 type Fighter struct {
@@ -87,8 +96,8 @@ func (self *Fighter) Hurt(dmg int) {
 }
 
 func (self *Fighter) Attack(other *Fighter) {
-	atk := D20.Roll() + self.melee
-	ev := D20.Roll() + other.evasion
+	atk := d20.Roll() + self.melee
+	ev := d20.Roll() + other.evasion
 
 	if ev > atk {
 		return

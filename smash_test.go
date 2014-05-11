@@ -14,7 +14,7 @@ func TestHurt(t *testing.T) {
 
 func TestHit(t *testing.T) {
 	// Attacker rolls 1, defender rolls 0.
-	D20 = NewFixedDice([]int{1, 0})
+    setD20(NewFixedDice([]int{1, 0}))
 
 	// Attacker rolls 5 dmg.
 	f1 := NewFighter(10, 4, 0, NewFixedDice([]int{5}))
@@ -26,11 +26,13 @@ func TestHit(t *testing.T) {
 	if f2.HP != 5 {
 		t.Errorf("Expected 5, got %d", f2.HP)
 	}
+
+    resetD20()
 }
 
 func TestMiss(t *testing.T) {
 	// Attacker rolls 0, defender rolls 1.
-	D20 = NewFixedDice([]int{0, 1})
+    setD20(NewFixedDice([]int{0, 1}))
 
 	// Attacker shouldn't have to roll damage.
 	f1 := NewFighter(10, 3, 0, NewFixedDice([]int{}))
@@ -42,6 +44,8 @@ func TestMiss(t *testing.T) {
 	if f2.HP != 10 {
 		t.Errorf("Expected 10, got %d", f2.HP)
 	}
+
+    resetD20()
 }
 
 func TestIsDead(t *testing.T) {
