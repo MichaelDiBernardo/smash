@@ -74,7 +74,12 @@ func NewFighter(hp int, melee int, evasion int, dice Roller) *Fighter {
 func NewFighterAtRandom() *Fighter {
 	hitDice := NewDice(6, 4)
 	skillDice := NewDice(10, 2)
-	return NewFighter(hitDice.Roll(), skillDice.Roll(), skillDice.Roll(), NewDiceAtRandom())
+	return NewFighter(
+		hitDice.Roll(),
+		skillDice.Roll(),
+		skillDice.Roll(),
+		NewDiceAtRandom(),
+	)
 }
 
 func (self *Fighter) Hurt(dmg int) {
@@ -109,14 +114,28 @@ func NewTeamWithSelector(roster []*Fighter, selector func([]*Fighter) *Fighter) 
 }
 
 func defaultSelector(roster []*Fighter) *Fighter {
-    n := rand.Intn(len(roster))
-    return roster[n]
+	n := rand.Intn(len(roster))
+	return roster[n]
 }
 
 func NewTeam(roster []*Fighter) *Team {
-    return NewTeamWithSelector(roster, defaultSelector)
+	return NewTeamWithSelector(roster, defaultSelector)
 }
 
-func (self *Team) Select() *Fighter {
-    return self.selector(self.roster)
+func (self *Team) Dead() bool {
+	for _, f := range self.roster {
+		if !f.Dead() {
+			return false
+		}
+	}
+	return true
+}
+
+func (self *Team) DefendAgainst(other *Fighter) {
+	defender := self.pick()
+	other.Attack(defender)
+}
+
+func (self *Team) pick() *Fighter {
+	return self.selector(self.roster)
 }

@@ -58,12 +58,52 @@ func TestIsDead(t *testing.T) {
 	}
 }
 
-func TestSelectFighterFromTeam(t *testing.T) {
+func TestPickFighterFromTeam(t *testing.T) {
 	team := []*Fighter{NewFighterAtRandom(), NewFighterAtRandom()}
 	sut := NewTeamWithSelector(team, func(t []*Fighter) *Fighter { return t[0] })
-    selected := sut.Select()
+	selected := sut.pick()
 
 	if selected != team[0] {
 		t.Errorf("Did not select dude from selector!")
+	}
+}
+
+func TestTeamDead(t *testing.T) {
+	team := []*Fighter{NewFighterAtRandom(), NewFighterAtRandom()}
+	sut := NewTeam(team)
+
+	if sut.Dead() {
+		t.Errorf("Team isn't dead - 2 still alive!")
+	}
+
+	team[0].HP = -4
+
+	if sut.Dead() {
+		t.Errorf("Team isn't dead - 1 still alive!")
+	}
+
+	team[1].HP = -4
+
+	if !sut.Dead() {
+		t.Errorf("Team is dead - reported alive!")
+	}
+}
+
+func TestFightMember(t *testing.T) {
+	team := []*Fighter{
+		NewFighter(5, 0, 0, NewFixedDice([]int{})),
+		NewFighter(5, 0, 0, NewFixedDice([]int{})),
+	}
+
+	// No way this guy is going to miss. Will do 10 damage.
+	attacker := NewFighter(10, 1000, 0, NewFixedDice([]int{10}))
+
+	// The first guy will be selected to fight him.
+	sut := NewTeamWithSelector(team, func(t []*Fighter) *Fighter { return t[0] })
+
+	sut.DefendAgainst(attacker)
+
+	if team[0].HP != -5 {
+		t.Errorf("Expected first dude to have -5HP: had %d.", team[0].HP)
 	}
 }
