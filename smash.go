@@ -8,7 +8,6 @@ import (
 //------------------------------------------------------------------------------
 // Random numbers.
 //------------------------------------------------------------------------------
-
 // Anything that can produce a random value is a roller. Bad name, I know.
 type Roller interface {
 	Roll() int

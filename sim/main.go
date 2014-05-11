@@ -1,3 +1,21 @@
+/*
+Simulation teams of elves and orcs fighting. Equal-sized teams are pitted
+against one another and go to battle. Each team alternates attacking and
+defending, with individual attackers and defenders chosed at random within each
+team on each round.
+
+When a team wins a battle, it submits itself to be entered into another battle
+with winners from some other fight of opposing allegiance.
+
+The simulation is over when all the fighters from one allegiance have fallen in
+battle.
+
+TODO:
+ - Delete all Printfs and report events to a central reporting channel.
+ - Report on more events.
+ - Give dudes names.
+ - Level dudes up when they do something.
+*/
 package main
 
 import (
@@ -9,7 +27,7 @@ import (
 )
 
 // Create a random team of dudes. Each dude created will send 1 to the given
-// channel updon dying.
+// channel upon falling.
 func randomTeam(deathQueue chan int) *smash.Team {
 	dudes := []*smash.Fighter{
 		smash.NewFighterAtRandom(),
