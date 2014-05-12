@@ -24,7 +24,7 @@ import (
 	"math/rand"
 	"time"
 
-	"smash"
+	"github.com/MichaelDiBernardo/smash"
 )
 
 // Create a random team of dudes. Each dude created will send 1 to the given
